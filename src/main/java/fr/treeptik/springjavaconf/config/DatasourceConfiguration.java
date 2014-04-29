@@ -8,8 +8,8 @@ import javax.sql.DataSource;
 import org.hibernate.ejb.HibernatePersistence;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
-import org.springframework.orm.hibernate4.HibernateExceptionTranslator;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -20,8 +20,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.mysql.jdbc.Driver;
 
+import fr.treeptik.service.PersonneService;
+
 @Configuration
 @EnableTransactionManagement
+@EnableJpaRepositories (value = {"fr.treeptik.dao"})
 public class DatasourceConfiguration {
 
 	@Bean
@@ -30,7 +33,7 @@ public class DatasourceConfiguration {
 		Driver driver = new Driver();
 		driver.acceptsURL("com.mysql.jdbc.Driver");
 		config.setDriver(driver);
-		config.setUrl("jdbc:mysql://localhost:3306/jpasample");
+		config.setUrl("jdbc:mysql://localhost:3306/springjavaconf");
 		config.setUsername("root");
 		config.setPassword("root");
 		return config;
@@ -44,7 +47,7 @@ public class DatasourceConfiguration {
 		lcemfb.setDataSource(dataSource());
 		lcemfb.setJpaDialect(new HibernateJpaDialect());
 		lcemfb.setJpaVendorAdapter(jpaVendorAdapter());
-		lcemfb.setPackagesToScan("fr.treeptik.springjavaconf.model");
+		lcemfb.setPackagesToScan("fr.treeptik.model");
 		lcemfb.afterPropertiesSet();
 		return lcemfb.getObject();
 	}
@@ -66,10 +69,15 @@ public class DatasourceConfiguration {
 		jpaVendorAdapter.setGenerateDdl(true);
 		return jpaVendorAdapter;
 	}
-
+	
 	@Bean
-	public HibernateExceptionTranslator hibernateExceptionTranslator() {
-		return new HibernateExceptionTranslator();
+	public PersonneService personneService() {
+		return new PersonneService();
 	}
+
+//	@Bean
+//	public HibernateExceptionTranslator hibernateExceptionTranslator() {
+//		return new HibernateExceptionTranslator();
+//	}
 
 }
